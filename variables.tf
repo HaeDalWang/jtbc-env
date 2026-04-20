@@ -40,7 +40,7 @@ variable "name_service" {
 }
 
 variable "ec2_role_name" {
-  description = "EC2 역할 접미사 (예: was → …-was-1, …-was-2)"
+  description = "EC2 역할 접미사 (예: was → …-was01, …-was02)"
   type        = string
   default     = "was"
 }

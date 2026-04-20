@@ -40,10 +40,10 @@ locals {
   cw_metrics_ec2_cpu = concat(
     [for i, inst in aws_instance.app : [
       "AWS/EC2", "CPUUtilization", "InstanceId", inst.id,
-      { stat = "Average", period = 60, label = "${var.ec2_role_name}-${i + 1}" }
+      { stat = "Average", period = 60, label = format("%s%02d", var.ec2_role_name, i + 1) }
     ]],
     [["AWS/EC2", "CPUUtilization", "InstanceId", aws_instance.bastion.id, {
-      stat = "Average", period = 60, label = var.bastion_role_name
+      stat = "Average", period = 60, label = "${var.bastion_role_name}${local.name_suffix_01}"
     }]]
   )
 
@@ -51,42 +51,42 @@ locals {
   cw_metrics_ec2_net = concat(
     [for i, inst in aws_instance.app : [
       "AWS/EC2", "NetworkIn", "InstanceId", inst.id,
-      { stat = "Average", period = 60, label = "In ${var.ec2_role_name}-${i + 1}" },
+      { stat = "Average", period = 60, label = format("In %s%02d", var.ec2_role_name, i + 1) },
     ]],
     [for i, inst in aws_instance.app : [
       "AWS/EC2", "NetworkOut", "InstanceId", inst.id,
-      { stat = "Average", period = 60, label = "Out ${var.ec2_role_name}-${i + 1}" },
+      { stat = "Average", period = 60, label = format("Out %s%02d", var.ec2_role_name, i + 1) },
     ]],
     [
-      ["AWS/EC2", "NetworkIn", "InstanceId", aws_instance.bastion.id, { stat = "Average", period = 60, label = "In ${var.bastion_role_name}" }],
-      ["AWS/EC2", "NetworkOut", "InstanceId", aws_instance.bastion.id, { stat = "Average", period = 60, label = "Out ${var.bastion_role_name}" }],
+      ["AWS/EC2", "NetworkIn", "InstanceId", aws_instance.bastion.id, { stat = "Average", period = 60, label = "In ${var.bastion_role_name}${local.name_suffix_01}" }],
+      ["AWS/EC2", "NetworkOut", "InstanceId", aws_instance.bastion.id, { stat = "Average", period = 60, label = "Out ${var.bastion_role_name}${local.name_suffix_01}" }],
     ],
   )
 
   cw_metrics_ec2_status = concat(
     [for i, inst in aws_instance.app : [
       "AWS/EC2", "StatusCheckFailed", "InstanceId", inst.id,
-      { stat = "Maximum", period = 60, label = "${var.ec2_role_name}-${i + 1}", color = i % 2 == 0 ? "#d62728" : "#ff7f0e" }
+      { stat = "Maximum", period = 60, label = format("%s%02d", var.ec2_role_name, i + 1), color = i % 2 == 0 ? "#d62728" : "#ff7f0e" }
     ]],
     [[
       "AWS/EC2", "StatusCheckFailed", "InstanceId", aws_instance.bastion.id,
-      { stat = "Maximum", period = 60, label = var.bastion_role_name, color = "#9467bd" }
+      { stat = "Maximum", period = 60, label = "${var.bastion_role_name}${local.name_suffix_01}", color = "#9467bd" }
     ]]
   )
 
   cw_metrics_cwagent_mem = concat(
     [for i, inst in aws_instance.app : [
       "CWAgent", "mem_used_percent", "InstanceId", inst.id,
-      { stat = "Average", period = 60, label = "${var.ec2_role_name}-${i + 1}" }
+      { stat = "Average", period = 60, label = format("%s%02d", var.ec2_role_name, i + 1) }
     ]],
     [["CWAgent", "mem_used_percent", "InstanceId", aws_instance.bastion.id, {
-      stat = "Average", period = 60, label = var.bastion_role_name
+      stat = "Average", period = 60, label = "${var.bastion_role_name}${local.name_suffix_01}"
     }]]
   )
 }
 
 resource "aws_cloudwatch_dashboard" "ops" {
-  dashboard_name = substr("${local.name_base}-ops", 0, 255)
+  dashboard_name = substr("${local.name_base}-ops${local.name_suffix_01}", 0, 255)
 
   dashboard_body = jsonencode({
     widgets = [

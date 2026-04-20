@@ -2,7 +2,7 @@
 
 # --- 보안 그룹 ---
 resource "aws_security_group" "alb" {
-  name_prefix = "${local.iam_prefix}alb-sg-"
+  name_prefix = "${local.iam_prefix}alb${local.name_suffix_01}-sg-"
   description = "ALB inbound TCP ${var.alb_listener_port} from Internet (WAF enforces allowlist)"
   vpc_id      = module.vpc.vpc_id
 
@@ -26,12 +26,12 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name = "${local.name_base}-sg-${var.alb_role_name}"
+    Name = "${local.name_base}-sg-${var.alb_role_name}${local.name_suffix_01}"
   }
 }
 
 resource "aws_security_group" "ec2_app" {
-  name_prefix = "${local.iam_prefix}${var.ec2_role_name}-sg-"
+  name_prefix = "${local.iam_prefix}${var.ec2_role_name}${local.name_suffix_01}-sg-"
   description = "private EC2 to ALB port ${var.target_port} allow"
   vpc_id      = module.vpc.vpc_id
 
@@ -63,13 +63,13 @@ resource "aws_security_group" "ec2_app" {
   }
 
   tags = {
-    Name = "${local.name_base}-sg-${var.ec2_role_name}"
+    Name = "${local.name_base}-sg-${var.ec2_role_name}${local.name_suffix_01}"
   }
 }
 
 # --- EC2 IAM (Session Manager용) ---
 resource "aws_iam_role" "ec2_app" {
-  name_prefix = "${local.iam_prefix}${var.ec2_role_name}-iam-"
+  name_prefix = "${local.iam_prefix}${var.ec2_role_name}${local.name_suffix_01}-iam-"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -83,7 +83,7 @@ resource "aws_iam_role" "ec2_app" {
   })
 
   tags = {
-    Name = "${local.name_base}-iam-${var.ec2_role_name}"
+    Name = "${local.name_base}-iam-${var.ec2_role_name}${local.name_suffix_01}"
   }
 }
 
@@ -93,7 +93,7 @@ resource "aws_iam_role_policy_attachment" "ec2_ssm" {
 }
 
 resource "aws_iam_instance_profile" "ec2_app" {
-  name_prefix = "${local.iam_prefix}${var.ec2_role_name}-prof-"
+  name_prefix = "${local.iam_prefix}${var.ec2_role_name}${local.name_suffix_01}-prof-"
   role        = aws_iam_role.ec2_app.name
 }
 
@@ -120,7 +120,7 @@ resource "aws_instance" "app" {
   EOT
 
   tags = {
-    Name = "${local.name_base}-${var.ec2_role_name}-${count.index + 1}"
+    Name = format("%s-%s%02d", local.name_base, var.ec2_role_name, count.index + 1)
   }
 
   lifecycle {
@@ -149,7 +149,7 @@ resource "aws_lb_target_group" "app" {
   }
 
   tags = {
-    Name = "${local.name_base}-tg-${var.ec2_role_name}"
+    Name = "${local.name_base}-tg${local.name_suffix_01}"
   }
 }
 
@@ -192,7 +192,7 @@ resource "aws_wafv2_ip_set" "alb_allowlist" {
   addresses          = local.waf_ipv4_normalized
 
   tags = {
-    Name = "${local.name_base}-waf-ipset"
+    Name = "${local.name_base}-waf-ipset${local.name_suffix_01}"
   }
 }
 
@@ -232,7 +232,7 @@ resource "aws_wafv2_web_acl" "alb" {
   }
 
   tags = {
-    Name = "${local.name_base}-waf-acl"
+    Name = "${local.name_base}-waf-acl${local.name_suffix_01}"
   }
 }
 

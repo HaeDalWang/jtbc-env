@@ -1,7 +1,7 @@
-# 퍼블릭 서브넷 바스티온 (패턴: {base}-{bastion_role_name})
+# 퍼블릭 서브넷 바스티온 (패턴: {base}-{bastion_role_name}{01})
 
 resource "aws_security_group" "bastion" {
-  name_prefix = "${local.iam_prefix}${var.bastion_role_name}-sg-"
+  name_prefix = "${local.iam_prefix}${var.bastion_role_name}${local.name_suffix_01}-sg-"
   description = "Bastion host (optional SSH from bastion_ssh_allowed_cidr_blocks)"
   vpc_id      = module.vpc.vpc_id
 
@@ -28,12 +28,12 @@ resource "aws_security_group" "bastion" {
   }
 
   tags = {
-    Name = "${local.name_base}-sg-${var.bastion_role_name}"
+    Name = "${local.name_base}-sg-${var.bastion_role_name}${local.name_suffix_01}"
   }
 }
 
 resource "aws_iam_role" "bastion" {
-  name_prefix = "${local.iam_prefix}${var.bastion_role_name}-iam-"
+  name_prefix = "${local.iam_prefix}${var.bastion_role_name}${local.name_suffix_01}-iam-"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -47,7 +47,7 @@ resource "aws_iam_role" "bastion" {
   })
 
   tags = {
-    Name = "${local.name_base}-iam-${var.bastion_role_name}"
+    Name = "${local.name_base}-iam-${var.bastion_role_name}${local.name_suffix_01}"
   }
 }
 
@@ -57,7 +57,7 @@ resource "aws_iam_role_policy_attachment" "bastion_ssm" {
 }
 
 resource "aws_iam_instance_profile" "bastion" {
-  name_prefix = "${local.iam_prefix}${var.bastion_role_name}-prof-"
+  name_prefix = "${local.iam_prefix}${var.bastion_role_name}${local.name_suffix_01}-prof-"
   role        = aws_iam_role.bastion.name
 }
 
@@ -72,7 +72,7 @@ resource "aws_instance" "bastion" {
   key_name = var.bastion_key_name != null ? var.bastion_key_name : var.ec2_key_name
 
   tags = {
-    Name = "${local.name_base}-${var.bastion_role_name}"
+    Name = "${local.name_base}-${var.bastion_role_name}${local.name_suffix_01}"
   }
 
   lifecycle {
