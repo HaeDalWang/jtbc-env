@@ -181,7 +181,7 @@ resource "aws_wafv2_ip_set" "alb_allowlist" {
   name               = "${local.name_prefix}-alb-allow-ipv4"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
-  addresses          = var.waf_allowed_ipv4_cidr
+  addresses          = local.waf_ipv4_normalized
 
   tags = {
     Name = "${local.name_prefix}-waf-ipset-allow"

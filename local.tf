@@ -12,4 +12,9 @@ locals {
     project = var.project_name
     env     = var.environment
   })
+
+  # WAF IP 세트는 CIDR만 허용 — 슬래시가 없으면 단일 호스트로 /32 부여
+  waf_ipv4_normalized = [
+    for a in var.waf_allowed_ipv4_cidr : strcontains(a, "/") ? trimspace(a) : "${trimspace(a)}/32"
+  ]
 }

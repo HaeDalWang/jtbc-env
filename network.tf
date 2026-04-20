@@ -29,17 +29,15 @@ module "vpc" {
   }
 }
 
+# S3는 Gateway 엔드포인트 — subnet_ids 불가, 라우트 테이블에 프리픽스 목록 라우트가 붙음
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id       = module.vpc.vpc_id
-  service_name = "com.amazonaws.${data.aws_region.current.id}.s3"
-  subnet_ids   = module.vpc.private_subnets
+  vpc_id            = module.vpc.vpc_id
+  service_name      = "com.amazonaws.${data.aws_region.current.id}.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids   = concat(module.vpc.private_route_table_ids, module.vpc.public_route_table_ids)
 
   tags = {
     Name    = "${local.name_prefix}-s3-endpoint"
     project = local.project
-  }
-
-  lifecycle {
-    ignore_changes = [subnet_ids]
   }
 }

@@ -88,7 +88,7 @@ variable "health_check_path" {
 }
 
 variable "waf_allowed_ipv4_cidr" {
-  description = "WAF에서 허용할 공인 IPv4 CIDR 목록 (화이트리스트). 이 목록 외 접속은 차단됩니다."
+  description = "WAF 화이트리스트 IPv4. CIDR(예: 1.2.3.0/24) 또는 단일 IP만 적으면 자동으로 /32 처리됩니다."
   type        = list(string)
 
   validation {
