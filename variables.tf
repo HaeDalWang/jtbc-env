@@ -51,6 +51,30 @@ variable "alb_role_name" {
   default     = "cms"
 }
 
+variable "bastion_role_name" {
+  description = "바스티온 EC2 이름 접미사 (예: bastion → …-bastion)"
+  type        = string
+  default     = "bastion"
+}
+
+variable "bastion_instance_type" {
+  description = "바스티온 인스턴스 타입"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "bastion_key_name" {
+  description = "바스티온 Key Pair (비우면 ec2_key_name 사용)"
+  type        = string
+  default     = null
+}
+
+variable "bastion_ssh_allowed_cidr_blocks" {
+  description = "바스티온 SSH(22) 허용 CIDR. 비우면 인바운드 22 없음(SSM Session Manager 권장)"
+  type        = list(string)
+  default     = []
+}
+
 variable "tag_owner" {
   description = "리소스 owner 태그"
   type        = string

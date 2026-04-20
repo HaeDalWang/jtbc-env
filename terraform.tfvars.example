@@ -10,8 +10,9 @@ project_name = "jtbc"
 environment   = "stage"
 name_domain   = "news"
 name_service  = "metaj"
-ec2_role_name = "was"
-alb_role_name = "cms"
+ec2_role_name     = "was"
+alb_role_name     = "cms"
+bastion_role_name = "bastion"
 
 waf_allowed_ipv4_cidr = [
   "198.51.100.1/32",
