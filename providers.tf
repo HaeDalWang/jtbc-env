@@ -24,6 +24,11 @@ terraform {
 
 # AWS 제공자 설정
 provider "aws" {
+  # jtbc 계정 assume
+  # assume_role {
+  #   role_arn = "arn:aws:iam::277304862588:role/saltware-terraform-role"
+  #   session_name = "terraform"
+  # }
   default_tags {
     tags = local.tags
   }

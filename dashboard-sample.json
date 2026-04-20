@@ -1,0 +1,253 @@
+{
+    "widgets": [
+      {
+        "type": "text",
+        "x": 0, "y": 0, "width": 24, "height": 1,
+        "properties": { "markdown": "## 🔀 ALB (Application Load Balancer)" }
+      },
+      {
+        "type": "metric",
+        "x": 0, "y": 1, "width": 6, "height": 6,
+        "properties": {
+          "title": "ALB - 요청 수 (RequestCount)",
+          "metrics": [
+            ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", "app/MY-ALB-NAME/XXXXXXXXXXXX",
+              {"stat": "Sum", "period": 300}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2"
+        }
+      },
+      {
+        "type": "metric",
+        "x": 6, "y": 1, "width": 6, "height": 6,
+        "properties": {
+          "title": "ALB - 응답 시간 p50 / p99",
+          "metrics": [
+            ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "app/MY-ALB-NAME/XXXXXXXXXXXX",
+              {"stat": "p50", "period": 300, "label": "p50", "color": "#2ca02c"}],
+            ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "app/MY-ALB-NAME/XXXXXXXXXXXX",
+              {"stat": "p99", "period": 300, "label": "p99", "color": "#d62728"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2",
+          "yAxis": {"left": {"label": "seconds", "min": 0}}
+        }
+      },
+      {
+        "type": "metric",
+        "x": 12, "y": 1, "width": 6, "height": 6,
+        "properties": {
+          "title": "ALB - 5XX 에러",
+          "metrics": [
+            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", "app/MY-ALB-NAME/XXXXXXXXXXXX",
+              {"stat": "Sum", "period": 300, "label": "Target 5XX", "color": "#d62728"}],
+            ["AWS/ApplicationELB", "HTTPCode_ELB_5XX_Count", "LoadBalancer", "app/MY-ALB-NAME/XXXXXXXXXXXX",
+              {"stat": "Sum", "period": 300, "label": "ELB 5XX", "color": "#ff7f0e"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2"
+        }
+      },
+      {
+        "type": "metric",
+        "x": 18, "y": 1, "width": 6, "height": 6,
+        "properties": {
+          "title": "ALB - Healthy / Unhealthy Host 수",
+          "metrics": [
+            ["AWS/ApplicationELB", "HealthyHostCount", "TargetGroup", "targetgroup/MY-TG-NAME/XXXXXXXXXXXX", "LoadBalancer", "app/MY-ALB-NAME/XXXXXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "Healthy", "color": "#2ca02c"}],
+            ["AWS/ApplicationELB", "UnHealthyHostCount", "TargetGroup", "targetgroup/MY-TG-NAME/XXXXXXXXXXXX", "LoadBalancer", "app/MY-ALB-NAME/XXXXXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "Unhealthy", "color": "#d62728"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2"
+        }
+      },
+      {
+        "type": "text",
+        "x": 0, "y": 8, "width": 24, "height": 1,
+        "properties": { "markdown": "## 🖥️ EC2 Instances" }
+      },
+      {
+        "type": "metric",
+        "x": 0, "y": 9, "width": 8, "height": 6,
+        "properties": {
+          "title": "EC2 - CPU 사용률",
+          "metrics": [
+            ["AWS/EC2", "CPUUtilization", "InstanceId", "i-INSTANCE1XXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "Instance-1"}],
+            ["AWS/EC2", "CPUUtilization", "InstanceId", "i-INSTANCE2XXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "Instance-2"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2",
+          "yAxis": {"left": {"min": 0, "max": 100, "label": "%"}}
+        }
+      },
+      {
+        "type": "metric",
+        "x": 8, "y": 9, "width": 8, "height": 6,
+        "properties": {
+          "title": "EC2 - 네트워크 In/Out",
+          "metrics": [
+            ["AWS/EC2", "NetworkIn", "InstanceId", "i-INSTANCE1XXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "In - Instance-1"}],
+            ["AWS/EC2", "NetworkIn", "InstanceId", "i-INSTANCE2XXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "In - Instance-2"}],
+            ["AWS/EC2", "NetworkOut", "InstanceId", "i-INSTANCE1XXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "Out - Instance-1"}],
+            ["AWS/EC2", "NetworkOut", "InstanceId", "i-INSTANCE2XXXXXXXXX",
+              {"stat": "Average", "period": 60, "label": "Out - Instance-2"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2"
+        }
+      },
+      {
+        "type": "metric",
+        "x": 16, "y": 9, "width": 8, "height": 6,
+        "properties": {
+          "title": "EC2 - Status Check Failed",
+          "metrics": [
+            ["AWS/EC2", "StatusCheckFailed", "InstanceId", "i-INSTANCE1XXXXXXXXX",
+              {"stat": "Maximum", "period": 60, "label": "Instance-1", "color": "#d62728"}],
+            ["AWS/EC2", "StatusCheckFailed", "InstanceId", "i-INSTANCE2XXXXXXXXX",
+              {"stat": "Maximum", "period": 60, "label": "Instance-2", "color": "#ff7f0e"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2",
+          "annotations": {
+            "horizontal": [{"value": 1, "label": "FAIL", "color": "#d62728"}]
+          }
+        }
+      },
+      {
+        "type": "text",
+        "x": 0, "y": 16, "width": 24, "height": 1,
+        "properties": { "markdown": "## 🗄️ RDS Aurora Cluster" }
+      },
+      {
+        "type": "metric",
+        "x": 0, "y": 17, "width": 6, "height": 6,
+        "properties": {
+          "title": "RDS - CPU 사용률 (Writer / Reader)",
+          "metrics": [
+            ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "MY-AURORA-WRITER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Writer"}],
+            ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "MY-AURORA-READER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Reader"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2",
+          "yAxis": {"left": {"min": 0, "max": 100, "label": "%"}}
+        }
+      },
+      {
+        "type": "metric",
+        "x": 6, "y": 17, "width": 6, "height": 6,
+        "properties": {
+          "title": "RDS - DB 커넥션 수",
+          "metrics": [
+            ["AWS/RDS", "DatabaseConnections", "DBInstanceIdentifier", "MY-AURORA-WRITER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Writer"}],
+            ["AWS/RDS", "DatabaseConnections", "DBInstanceIdentifier", "MY-AURORA-READER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Reader"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2"
+        }
+      },
+      {
+        "type": "metric",
+        "x": 12, "y": 17, "width": 6, "height": 6,
+        "properties": {
+          "title": "RDS - Read / Write Latency",
+          "metrics": [
+            ["AWS/RDS", "ReadLatency", "DBInstanceIdentifier", "MY-AURORA-WRITER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Read Latency", "color": "#1f77b4"}],
+            ["AWS/RDS", "WriteLatency", "DBInstanceIdentifier", "MY-AURORA-WRITER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Write Latency", "color": "#ff7f0e"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2",
+          "yAxis": {"left": {"label": "seconds", "min": 0}}
+        }
+      },
+      {
+        "type": "metric",
+        "x": 18, "y": 17, "width": 6, "height": 6,
+        "properties": {
+          "title": "RDS - 남은 메모리 (FreeableMemory)",
+          "metrics": [
+            ["AWS/RDS", "FreeableMemory", "DBInstanceIdentifier", "MY-AURORA-WRITER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Writer"}],
+            ["AWS/RDS", "FreeableMemory", "DBInstanceIdentifier", "MY-AURORA-READER-INSTANCE",
+              {"stat": "Average", "period": 60, "label": "Reader"}]
+          ],
+          "view": "timeSeries",
+          "region": "ap-northeast-2"
+        }
+      },
+      {
+        "type": "text",
+        "x": 0, "y": 24, "width": 24, "height": 1,
+        "properties": { "markdown": "## 🌐 CloudFront  *(메트릭 리전 = us-east-1 고정)*" }
+      },
+      {
+        "type": "metric",
+        "x": 0, "y": 25, "width": 6, "height": 6,
+        "properties": {
+          "title": "CF - 요청 수 (Requests)",
+          "metrics": [
+            ["AWS/CloudFront", "Requests", "DistributionId", "EXXXXXXXXXXXXXXXXX", "Region", "Global",
+              {"stat": "Sum", "period": 300}]
+          ],
+          "view": "timeSeries",
+          "region": "us-east-1"
+        }
+      },
+      {
+        "type": "metric",
+        "x": 6, "y": 25, "width": 6, "height": 6,
+        "properties": {
+          "title": "CF - 전송량 (BytesDownloaded)",
+          "metrics": [
+            ["AWS/CloudFront", "BytesDownloaded", "DistributionId", "EXXXXXXXXXXXXXXXXX", "Region", "Global",
+              {"stat": "Sum", "period": 300}]
+          ],
+          "view": "timeSeries",
+          "region": "us-east-1"
+        }
+      },
+      {
+        "type": "metric",
+        "x": 12, "y": 25, "width": 6, "height": 6,
+        "properties": {
+          "title": "CF - 전체 에러율 (TotalErrorRate)",
+          "metrics": [
+            ["AWS/CloudFront", "TotalErrorRate", "DistributionId", "EXXXXXXXXXXXXXXXXX", "Region", "Global",
+              {"stat": "Average", "period": 300, "color": "#d62728"}]
+          ],
+          "view": "timeSeries",
+          "region": "us-east-1",
+          "yAxis": {"left": {"min": 0, "max": 100, "label": "%"}}
+        }
+      },
+      {
+        "type": "metric",
+        "x": 18, "y": 25, "width": 6, "height": 6,
+        "properties": {
+          "title": "CF - 캐시 히트율 (CacheHitRate)",
+          "metrics": [
+            ["AWS/CloudFront", "CacheHitRate", "DistributionId", "EXXXXXXXXXXXXXXXXX", "Region", "Global",
+              {"stat": "Average", "period": 300, "color": "#2ca02c"}]
+          ],
+          "view": "timeSeries",
+          "region": "us-east-1",
+          "yAxis": {"left": {"min": 0, "max": 100, "label": "%"}}
+        }
+      }
+    ]
+  }
+  

@@ -7,3 +7,8 @@ output "bastion_instance_id" {
   description = "바스티온 인스턴스 ID"
   value       = aws_instance.bastion.id
 }
+
+output "cloudwatch_dashboard_name" {
+  description = "CloudWatch 운영 대시보드 이름 (콘솔 → CloudWatch → Dashboards)"
+  value       = aws_cloudwatch_dashboard.ops.dashboard_name
+}
