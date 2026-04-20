@@ -1,0 +1,13 @@
+# 네트워크
+vpc_cidr = "10.10.0.0/16"
+public_subnet_cidr = ["10.10.1.0/24", "10.10.2.0/24", "10.10.3.0/24", "10.10.4.0/24"]
+private_subnet_cidr = ["10.10.5.0/24", "10.10.6.0/24", "10.10.7.0/24", "10.10.8.0/24"]
+
+project_name = "jtbc"
+project_prefix = "jb"
+environment  = "stg"
+
+# WAF 화이트리스트 — 실제 허용할 공인 IP/대역으로 교체
+waf_allowed_ipv4_cidr = [
+  "2.2.2.2/32",
+]

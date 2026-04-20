@@ -5,23 +5,8 @@ data "aws_availability_zones" "azs" {
   state = "available"
 }
 
-# Canonical Ubuntu 24.04 LTS (Noble), amd64, hvm-ssd
-data "aws_ami" "ubuntu_24_04" {
-  most_recent = true
-  owners      = ["099720109477"] # Canonical
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-noble-24.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
+# Ubuntu 24.04 LTS (Noble) — Canonical SSM. 23.10+ 루트 볼륨은 ebs-gp3 (ebs-gp2는 <=23.04)
+# 참고: https://documentation.ubuntu.com/aws/en/latest/aws-how-to/instances/find-ubuntu-images/
+data "aws_ssm_parameter" "ubuntu_24_04_ami" {
+  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }

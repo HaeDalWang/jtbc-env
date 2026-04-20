@@ -3,11 +3,11 @@
 # --- 보안 그룹 ---
 resource "aws_security_group" "alb" {
   name_prefix = "${local.name_prefix}-alb-"
-  description = "ALB 인바운드 (포트 ${var.alb_listener_port})"
+  description = "ALB inbound TCP ${var.alb_listener_port} from Internet (WAF enforces allowlist)"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description = "인터넷에서 HTTP (실제 허용은 WAF 화이트리스트)"
+    description = "HTTP from Internet; WAF allowlist applies before traffic reaches ALB"
     from_port   = var.alb_listener_port
     to_port     = var.alb_listener_port
     protocol    = "tcp"
@@ -32,11 +32,11 @@ resource "aws_security_group" "alb" {
 
 resource "aws_security_group" "ec2_app" {
   name_prefix = "${local.name_prefix}-ec2-"
-  description = "프라이빗 EC2 — ALB에서만 포트 ${var.target_port} 허용"
+  description = "private EC2 to ALB port ${var.target_port} allow"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description     = "ALB에서 HTTP"
+    description     = "ALB to HTTP"
     from_port       = var.target_port
     to_port         = var.target_port
     protocol        = "tcp"
@@ -93,7 +93,7 @@ resource "aws_iam_instance_profile" "ec2_app" {
 resource "aws_instance" "app" {
   count = var.ec2_instance_count
 
-  ami                    = data.aws_ami.ubuntu_24_04.id
+  ami                    = data.aws_ssm_parameter.ubuntu_24_04_ami.value
   instance_type          = var.ec2_instance_type
   subnet_id              = module.vpc.private_subnets[count.index % length(module.vpc.private_subnets)]
   vpc_security_group_ids = [aws_security_group.ec2_app.id]

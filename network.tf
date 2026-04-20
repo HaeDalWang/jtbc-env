@@ -6,9 +6,9 @@ module "vpc" {
   name = local.name_prefix
   cidr = var.vpc_cidr
 
-  azs              = data.aws_availability_zones.azs.names
-  public_subnets   = var.public_subnet_cidr
-  private_subnets  = var.private_subnet_cidr
+  azs             = data.aws_availability_zones.azs.names
+  public_subnets  = var.public_subnet_cidr
+  private_subnets = var.private_subnet_cidr
 
   default_security_group_egress = [
     {
@@ -35,8 +35,8 @@ resource "aws_vpc_endpoint" "s3" {
   subnet_ids   = module.vpc.private_subnets
 
   tags = {
-    Name      = "${local.name_prefix}-s3-endpoint"
-    project   = local.project
+    Name    = "${local.name_prefix}-s3-endpoint"
+    project = local.project
   }
 
   lifecycle {
