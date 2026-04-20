@@ -3,13 +3,12 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "6.5.1" # 최신화 2025년 12월 31일
 
-  name = local.project
+  name = local.name_prefix
   cidr = var.vpc_cidr
 
-  azs             = data.aws_availability_zones.azs.names
-  public_subnets  = [for idx, _ in data.aws_availability_zones.azs.names : cidrsubnet(var.vpc_cidr, 8, idx)]
-  private_subnets = [for idx, _ in data.aws_availability_zones.azs.names : cidrsubnet(var.vpc_cidr, 8, idx + 10)]
-  #intra_subnets   = [for idx, _ in data.aws_availability_zones.azs.names : cidrsubnet(var.vpc_cidr, 8, idx + 20)]
+  azs              = data.aws_availability_zones.azs.names
+  public_subnets   = var.public_subnet_cidr
+  private_subnets  = var.private_subnet_cidr
 
   default_security_group_egress = [
     {
@@ -36,9 +35,8 @@ resource "aws_vpc_endpoint" "s3" {
   subnet_ids   = module.vpc.private_subnets
 
   tags = {
-    Name      = "${local.project}-s3-endpoint"
+    Name      = "${local.name_prefix}-s3-endpoint"
     project   = local.project
-    terraform = "true"
   }
 
   lifecycle {
