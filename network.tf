@@ -3,7 +3,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "6.5.1" # 최신화 2025년 12월 31일
 
-  name = local.name_prefix
+  name = local.name_vpc
   cidr = var.vpc_cidr
 
   azs             = data.aws_availability_zones.azs.names
@@ -37,7 +37,6 @@ resource "aws_vpc_endpoint" "s3" {
   route_table_ids   = concat(module.vpc.private_route_table_ids, module.vpc.public_route_table_ids)
 
   tags = {
-    Name    = "${local.name_prefix}-s3-endpoint"
-    project = local.project
+    Name = local.name_s3_endpoint
   }
 }

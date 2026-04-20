@@ -15,22 +15,40 @@ variable "private_subnet_cidr" {
   type        = list(string)
   default     = ["10.10.5.0/24", "10.10.6.0/24", "10.10.7.0/24", "10.10.8.0/24"]
 }
+
 variable "project_name" {
-  description = "프로젝트 식별자 (VPC·리소스 이름 접두어로 사용)"
+  description = "비즈니스/과제 식별용 태그(project). 리소스 이름 패턴에는 쓰이지 않음"
   type        = string
   default     = "jtbc"
 }
 
-variable "project_prefix" {
-  description = "프로젝트 식별자 (VPC·리소스 이름 접두어로 사용)"
-  type        = string
-  default     = "jtbc"
-}
-
+# --- 네이밍: {environment}-{name_domain}-{name_service}-{역할} ---
 variable "environment" {
-  description = "환경 구분 (dev, stg, prod 등). 리소스 이름에 포함됩니다."
+  description = "환경 (예: stage, stg, prod)"
   type        = string
   default     = "dev"
+}
+
+variable "name_domain" {
+  description = "도메인/업무 구역 식별자 (예: news)"
+  type        = string
+}
+
+variable "name_service" {
+  description = "서비스 식별자 (예: metaj)"
+  type        = string
+}
+
+variable "ec2_role_name" {
+  description = "EC2 역할 접미사 (예: was → …-was-1, …-was-2)"
+  type        = string
+  default     = "was"
+}
+
+variable "alb_role_name" {
+  description = "ALB 리소스 역할 접미사 (예: cms → …-cms)"
+  type        = string
+  default     = "cms"
 }
 
 variable "tag_owner" {
