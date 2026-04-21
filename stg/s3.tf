@@ -4,11 +4,11 @@ locals {
   s3_buckets = {
     svc = {
       name    = "${local.name_base}-s3-svc"
-      comment = "service JSON (CloudFront OAC)"
+      comment = "service JSON for CloudFront OAC"
     }
     adm = {
       name    = "${local.name_base}-s3-adm"
-      comment = "admin only (internal IP)"
+      comment = "admin only internal IP"
     }
   }
 }
