@@ -35,7 +35,8 @@ waf_allowed_ipv4_cidr = ["JTBC_사내망_IP/32"]
 rds_instance_class = "db.t3.medium"
 rds_multi_az       = false
 rds_storage_gb     = 50
-rds_db_name        = "DB_METAJ"
+# rds_db_name은 null이 기본값 — 개발자가 Bastion에서 직접 DB 생성
+# rds_db_name = "DB_METAJ"
 rds_username       = "jtbc"
 # rds_password는 환경변수로 주입 권장:
 #   export TF_VAR_rds_password="your_password"

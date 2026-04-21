@@ -160,8 +160,10 @@ variable "rds_storage_gb" {
 }
 
 variable "rds_db_name" {
-  type    = string
-  default = "DB_METAJ"
+  description = "RDS 초기 DB 이름. null이면 DB 미생성 (개발자가 Bastion에서 직접 생성)"
+  type        = string
+  default     = null
+  nullable    = true
 }
 
 variable "rds_username" {
