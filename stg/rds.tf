@@ -3,7 +3,7 @@
 # --- 보안 그룹 ---
 resource "aws_security_group" "rds" {
   name        = local.name_sg_rds
-  description = "RDS MariaDB: WAS + Bastion 접근 허용"
+  description = "RDS MariaDB: allow WAS and Bastion"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
