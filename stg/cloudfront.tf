@@ -29,7 +29,7 @@ resource "aws_cloudfront_distribution" "svc" {
     compress               = true
 
     cache_policy_id          = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
-    origin_request_policy_id = "88a5eaf4-2fd4-4709-b370-b4c650ea3fcb" # CORS-S3Origin
+    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1" # CORS-S3Origin
   }
 
   restrictions {
