@@ -33,6 +33,11 @@ output "cloudwatch_dashboard_name" {
   value       = aws_cloudwatch_dashboard.ops.dashboard_name
 }
 
+output "cloudfront_domain" {
+  description = "CloudFront 배포 도메인 (임시, CNAME 설정 전)"
+  value       = aws_cloudfront_distribution.svc.domain_name
+}
+
 output "vpc_id" {
   description = "VPC ID"
   value       = module.vpc.vpc_id
