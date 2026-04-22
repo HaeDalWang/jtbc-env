@@ -3,15 +3,15 @@
 # --- 보안 그룹 ---
 resource "aws_security_group" "alb" {
   name        = local.name_sg_alb
-  description = "ALB inbound TCP ${var.alb_listener_port} from Internet (WAF enforces allowlist)"
+  description = "ALB inbound TCP ${var.alb_listener_port} from allowed IPs only"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description = "HTTP from Internet; WAF allowlist applies before traffic reaches ALB"
+    description = "HTTP from whitelisted IPs"
     from_port   = var.alb_listener_port
     to_port     = var.alb_listener_port
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = local.waf_ipv4_normalized
   }
 
   egress {
