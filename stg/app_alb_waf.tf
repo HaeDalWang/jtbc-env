@@ -22,7 +22,7 @@ resource "aws_security_group" "alb" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 
   tags = {
