@@ -16,6 +16,17 @@ resource "aws_security_group" "bastion" {
     }
   }
 
+  dynamic "ingress" {
+    for_each = length(var.bastion_ssh_allowed_cidr_blocks) > 0 ? [1] : []
+    content {
+      description = "SSH 2211 from trusted CIDRs"
+      from_port   = 2211
+      to_port     = 2211
+      protocol    = "tcp"
+      cidr_blocks = var.bastion_ssh_allowed_cidr_blocks
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

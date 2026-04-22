@@ -3,7 +3,7 @@
 # --- 보안 그룹 ---
 resource "aws_security_group" "alb" {
   name        = local.name_sg_alb
-  description = "ALB inbound TCP ${var.alb_listener_port} from allowed IPs only"
+  description = "ALB inbound TCP ${var.alb_listener_port} from Internet (WAF enforces allowlist)"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
@@ -47,6 +47,14 @@ resource "aws_security_group" "ec2_app" {
     description     = "SSH from bastion"
     from_port       = 22
     to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion.id]
+  }
+
+  ingress {
+    description     = "SSH 2211 from bastion"
+    from_port       = 2211
+    to_port         = 2211
     protocol        = "tcp"
     security_groups = [aws_security_group.bastion.id]
   }
