@@ -35,6 +35,7 @@ terraform init && terraform plan
 
 ## Git 규칙
 
+- add, commit 등 모든 명령어는 사용자가 요청시에만 수행
 - **Claude는 commit까지만 수행, push는 사용자가 직접 진행**
 - `terraform.tfvars`는 커밋 금지 (민감 정보 포함)
 
