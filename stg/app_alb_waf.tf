@@ -8,8 +8,16 @@ resource "aws_security_group" "alb" {
 
   ingress {
     description = "HTTP from whitelisted IPs"
-    from_port   = var.alb_listener_port
-    to_port     = var.alb_listener_port
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = local.waf_ipv4_normalized
+  }
+
+  ingress {
+    description = "HTTPS from whitelisted IPs"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = local.waf_ipv4_normalized
   }
