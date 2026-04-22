@@ -1,5 +1,4 @@
 # CloudFront + OAC — stg-news-metaj-s3-svc 바라봄
-# 도메인/ACM 없이 생성, 나중에 CNAME + 인증서 추가 예정
 
 # --- OAC (Origin Access Control) ---
 resource "aws_cloudfront_origin_access_control" "svc" {
@@ -70,6 +69,8 @@ resource "aws_cloudfront_distribution" "svc" {
   comment             = "${local.name_base}-cf"
   default_root_object = "index.html"
 
+  aliases = ["stg-mj-static.jtbc.co.kr"]
+
   origin {
     domain_name              = aws_s3_bucket.buckets["svc"].bucket_regional_domain_name
     origin_id                = "${local.name_base}-s3-svc"
@@ -99,7 +100,9 @@ resource "aws_cloudfront_distribution" "svc" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = "arn:aws:acm:us-east-1:277304862588:certificate/8495f3be-295a-41ec-8436-a1ef28bbed42"
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   tags = {

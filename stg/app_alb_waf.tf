@@ -189,14 +189,32 @@ resource "aws_lb" "app" {
   }
 }
 
-resource "aws_lb_listener" "http" {
+resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.app.arn
-  port              = var.alb_listener_port
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = "arn:aws:acm:ap-northeast-2:277304862588:certificate/a79efdea-bf27-4a5a-a658-e0c8333e1eb5"
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app.arn
+  }
+}
+
+# HTTP → HTTPS 리다이렉트
+resource "aws_lb_listener" "http_redirect" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
 
