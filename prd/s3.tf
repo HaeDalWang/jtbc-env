@@ -47,6 +47,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "buckets" {
       sse_algorithm = "AES256"
     }
   }
+
+  lifecycle {
+    ignore_changes = [rule]
+  }
 }
 
 # 버전 관리 비활성화 (문서 기준: 사용안함)
