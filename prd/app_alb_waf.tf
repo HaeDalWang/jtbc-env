@@ -121,7 +121,50 @@ resource "aws_iam_role_policy" "ec2_app_ssm_params" {
     Statement = [{
       Effect   = "Allow"
       Action   = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"]
-      Resource = "arn:aws:ssm:${data.aws_region.current.id}:277304862588:parameter/metaj-cms/prod/*"
+      Resource = "arn:aws:ssm:${data.aws_region.current.id}:277304862588:parameter/metaj-cms/*"
+    }]
+  })
+}
+
+# S3 권한 — svc/adm 버킷 업로드·조회·삭제
+resource "aws_iam_role_policy" "ec2_app_s3" {
+  name = "${local.name_iam_was}-s3"
+  role = aws_iam_role.ec2_app.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"]
+        Resource = [
+          "${aws_s3_bucket.buckets["svc"].arn}/*",
+          "${aws_s3_bucket.buckets["adm"].arn}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = ["s3:ListBucket"]
+        Resource = [
+          aws_s3_bucket.buckets["svc"].arn,
+          aws_s3_bucket.buckets["adm"].arn,
+        ]
+      }
+    ]
+  })
+}
+
+# CloudFront 캐시 무효화 권한
+resource "aws_iam_role_policy" "ec2_app_cloudfront" {
+  name = "${local.name_iam_was}-cloudfront"
+  role = aws_iam_role.ec2_app.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["cloudfront:CreateInvalidation", "cloudfront:GetInvalidation"]
+      Resource = aws_cloudfront_distribution.svc.arn
     }]
   })
 }
