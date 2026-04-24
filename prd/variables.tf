@@ -1,7 +1,7 @@
 # --- 네이밍 ---
 variable "environment" {
   type    = string
-  default = "stg"
+  default = "prd"
 }
 
 variable "name_domain" {
@@ -32,22 +32,22 @@ variable "additional_tags" {
 # --- 네트워크 ---
 variable "vpc_cidr" {
   type    = string
-  default = "10.10.2.0/24"
+  default = "10.10.1.0/24"
 }
 
 variable "public_subnet_cidr" {
   type    = list(string)
-  default = ["10.10.2.0/27", "10.10.2.32/27"]
+  default = ["10.10.1.0/27", "10.10.1.32/27"]
 }
 
 variable "private_subnet_cidr" {
   type    = list(string)
-  default = ["10.10.2.64/26", "10.10.2.128/26"]
+  default = ["10.10.1.64/26", "10.10.1.128/26"]
 }
 
 variable "db_subnet_cidr" {
   type    = list(string)
-  default = ["10.10.2.192/27", "10.10.2.224/27"]
+  default = ["10.10.1.192/27", "10.10.1.224/27"]
 }
 
 # --- EC2 역할 이름 ---
@@ -69,7 +69,7 @@ variable "bastion_role_name" {
 # --- EC2 ---
 variable "ec2_instance_count" {
   type    = number
-  default = 1
+  default = 2
 
   validation {
     condition     = var.ec2_instance_count >= 1 && var.ec2_instance_count <= 10
@@ -79,7 +79,7 @@ variable "ec2_instance_count" {
 
 variable "ec2_instance_type" {
   type    = string
-  default = "t3.medium"
+  default = "t3.large"
 }
 
 variable "ec2_key_name" {
@@ -130,7 +130,7 @@ variable "target_port" {
 
 variable "health_check_path" {
   type    = string
-  default = "/health"
+  default = "/actuator/health"
 }
 
 variable "waf_allowed_ipv4_cidr" {
@@ -146,12 +146,12 @@ variable "waf_allowed_ipv4_cidr" {
 # --- RDS ---
 variable "rds_instance_class" {
   type    = string
-  default = "db.t3.medium"
+  default = "db.t3.large"
 }
 
 variable "rds_multi_az" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "rds_storage_gb" {
