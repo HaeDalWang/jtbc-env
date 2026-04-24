@@ -111,30 +111,22 @@ resource "aws_iam_role_policy_attachment" "ec2_app_cw_agent" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
-# Parameter Store 읽기 권한 — /metaj-cms/stage/ 경로 한정
-resource "aws_iam_role_policy" "ec2_app_ssm_params" {
-  name = "${local.name_iam_was}-ssm-params"
-  role = aws_iam_role.ec2_app.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"]
-      Resource = "arn:aws:ssm:${data.aws_region.current.id}:277304862588:parameter/metaj-cms/*"
-    }]
-  })
-}
-
-# S3 권한 — svc/adm 버킷 업로드·조회·삭제
-resource "aws_iam_role_policy" "ec2_app_s3" {
-  name = "${local.name_iam_was}-s3"
+# WAS EC2 인라인 정책 — SSM/S3/CloudFront 권한 통합
+resource "aws_iam_role_policy" "ec2_app" {
+  name = "${local.name_iam_was}-policy"
   role = aws_iam_role.ec2_app.id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
+        Sid      = "SSMParameterStore"
+        Effect   = "Allow"
+        Action   = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"]
+        Resource = "arn:aws:ssm:${data.aws_region.current.id}:277304862588:parameter/metaj-cms/*"
+      },
+      {
+        Sid    = "S3ObjectAccess"
         Effect = "Allow"
         Action = ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"]
         Resource = [
@@ -143,29 +135,21 @@ resource "aws_iam_role_policy" "ec2_app_s3" {
         ]
       },
       {
+        Sid    = "S3BucketList"
         Effect = "Allow"
         Action = ["s3:ListBucket"]
         Resource = [
           aws_s3_bucket.buckets["svc"].arn,
           aws_s3_bucket.buckets["adm"].arn,
         ]
+      },
+      {
+        Sid      = "CloudFrontInvalidation"
+        Effect   = "Allow"
+        Action   = ["cloudfront:CreateInvalidation", "cloudfront:GetInvalidation"]
+        Resource = aws_cloudfront_distribution.svc.arn
       }
     ]
-  })
-}
-
-# CloudFront 캐시 무효화 권한
-resource "aws_iam_role_policy" "ec2_app_cloudfront" {
-  name = "${local.name_iam_was}-cloudfront"
-  role = aws_iam_role.ec2_app.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = ["cloudfront:CreateInvalidation", "cloudfront:GetInvalidation"]
-      Resource = aws_cloudfront_distribution.svc.arn
-    }]
   })
 }
 
