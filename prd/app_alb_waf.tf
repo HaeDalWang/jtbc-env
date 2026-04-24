@@ -111,6 +111,21 @@ resource "aws_iam_role_policy_attachment" "ec2_app_cw_agent" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+# Parameter Store 읽기 권한 — /metaj-cms/prod/ 경로 한정
+resource "aws_iam_role_policy" "ec2_app_ssm_params" {
+  name = "${local.name_iam_was}-ssm-params"
+  role = aws_iam_role.ec2_app.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"]
+      Resource = "arn:aws:ssm:${data.aws_region.current.id}:277304862588:parameter/metaj-cms/prod/*"
+    }]
+  })
+}
+
 resource "aws_iam_instance_profile" "ec2_app" {
   name = "${local.name_iam_was}-profile"
   role = aws_iam_role.ec2_app.name
