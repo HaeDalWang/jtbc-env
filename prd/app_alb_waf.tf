@@ -158,7 +158,7 @@ resource "aws_iam_instance_profile" "ec2_app" {
   role = aws_iam_role.ec2_app.name
 }
 
-# --- WAS EC2 (엑셀: stg-news-metaj-was-01) ---
+# --- WAS EC2 (엑셀: prd-news-metaj-was-01, was-02) ---
 resource "aws_instance" "app" {
   count = var.ec2_instance_count
 

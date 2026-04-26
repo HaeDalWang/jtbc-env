@@ -1,4 +1,4 @@
-# CloudFront + OAC — stg-news-metaj-s3-svc 바라봄
+# CloudFront + OAC — prd-news-metaj-s3-svc 바라봄
 
 # --- OAC (Origin Access Control) ---
 resource "aws_cloudfront_origin_access_control" "svc" {

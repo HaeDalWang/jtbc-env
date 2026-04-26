@@ -1,4 +1,4 @@
-# STG S3 버킷 2개: 서비스용(svc) + 관리자용(adm)
+# PRD S3 버킷 2개: 서비스용(svc) + 관리자용(adm)
 
 locals {
   s3_buckets = {

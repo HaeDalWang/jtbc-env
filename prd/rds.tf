@@ -1,4 +1,4 @@
-# MariaDB 11.8.6 — STG (Single-AZ)
+# MariaDB 11.8.6 — PRD (Multi-AZ)
 
 # --- 보안 그룹 ---
 resource "aws_security_group" "rds" {
@@ -119,7 +119,7 @@ resource "aws_db_instance" "main" {
   multi_az            = var.rds_multi_az
   publicly_accessible = false
 
-  backup_retention_period = 7
+  backup_retention_period = 14
   backup_window           = "18:00-19:00"         # 03:00-04:00 KST
   maintenance_window      = "sun:20:00-sun:21:00" # Sun 05:00-06:00 KST
 
