@@ -128,7 +128,9 @@ resource "aws_db_instance" "main" {
 
   auto_minor_version_upgrade = true
 
-  skip_final_snapshot = true
+  skip_final_snapshot       = false
+  final_snapshot_identifier = "${local.name_base}-rds-final-snapshot"
+  deletion_protection       = true
 
   tags = {
     Name = "${local.name_base}-rds"

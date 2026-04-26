@@ -123,7 +123,7 @@ resource "aws_iam_role_policy" "ec2_app" {
         Sid      = "SSMParameterStore"
         Effect   = "Allow"
         Action   = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"]
-        Resource = "arn:aws:ssm:${data.aws_region.current.id}:277304862588:parameter/metaj-cms/*"
+        Resource = "arn:aws:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:parameter/metaj-cms/*"
       },
       {
         Sid    = "S3ObjectAccess"
