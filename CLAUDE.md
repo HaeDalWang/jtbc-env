@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 개요
 
-Terraform으로 JTBC AWS 계정에 VPC·ALB·WAF·EC2(WAS/바스티온)·RDS·S3·CloudFront·CloudWatch를 프로비저닝합니다.
+Terraform으로 JTBC AWS 계정에 VPC·ALB·WAF·EC2(WAS/bastion)·RDS·S3·CloudFront·CloudWatch를 프로비저닝합니다.
 STG와 PRD 두 환경을 독립 디렉토리로 관리합니다.
 
 ## 주요 명령어
