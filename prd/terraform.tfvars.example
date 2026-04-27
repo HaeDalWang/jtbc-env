@@ -32,9 +32,10 @@ health_check_path     = "/actuator/health"
 waf_allowed_ipv4_cidr = ["JTBC_사내망_IP/32"]
 
 # --- RDS ---
-rds_instance_class = "db.t3.large"
-rds_multi_az       = true
-rds_storage_gb     = 50
+rds_instance_class  = "db.t3.large"
+rds_multi_az        = true
+rds_storage_gb      = 50
+rds_max_storage_gb  = 200
 # rds_db_name은 null이 기본값 — 개발자가 Bastion에서 직접 DB 생성
 # rds_db_name = "DB_METAJ"
 rds_username       = "jtbc"
