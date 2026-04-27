@@ -159,6 +159,12 @@ variable "rds_storage_gb" {
   default = 50
 }
 
+variable "rds_max_storage_gb" {
+  description = "RDS 스토리지 자동 확장 최대 크기 (GiB). 0이면 자동 확장 비활성화"
+  type        = number
+  default     = 200
+}
+
 variable "rds_db_name" {
   description = "RDS 초기 DB 이름. null이면 DB 미생성 (개발자가 Bastion에서 직접 생성)"
   type        = string

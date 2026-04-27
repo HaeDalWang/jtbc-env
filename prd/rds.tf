@@ -102,9 +102,10 @@ resource "aws_db_instance" "main" {
   engine_version = "11.8.6"
   instance_class = var.rds_instance_class
 
-  allocated_storage = var.rds_storage_gb
-  storage_type      = "gp3"
-  storage_encrypted = true
+  allocated_storage     = var.rds_storage_gb
+  max_allocated_storage = var.rds_max_storage_gb
+  storage_type          = "gp3"
+  storage_encrypted     = true
 
   db_name  = var.rds_db_name
   username = var.rds_username
@@ -126,7 +127,9 @@ resource "aws_db_instance" "main" {
   monitoring_interval = 60
   monitoring_role_arn = aws_iam_role.rds_enhanced_monitoring.arn
 
-  auto_minor_version_upgrade = true
+  performance_insights_enabled = true
+
+  auto_minor_version_upgrade = false
 
   skip_final_snapshot       = false
   final_snapshot_identifier = "${local.name_base}-rds-final-snapshot"
