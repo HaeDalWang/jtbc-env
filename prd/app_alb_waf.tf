@@ -132,6 +132,7 @@ resource "aws_iam_role_policy" "ec2_app" {
         Resource = [
           "${aws_s3_bucket.buckets["svc"].arn}/*",
           "${aws_s3_bucket.buckets["adm"].arn}/*",
+          "arn:aws:s3:::${local.name_base}-s3-cicd/*",
         ]
       },
       {
@@ -141,6 +142,7 @@ resource "aws_iam_role_policy" "ec2_app" {
         Resource = [
           aws_s3_bucket.buckets["svc"].arn,
           aws_s3_bucket.buckets["adm"].arn,
+          "arn:aws:s3:::${local.name_base}-s3-cicd",
         ]
       },
       {
