@@ -63,10 +63,10 @@ resource "aws_cloudfront_function" "ip_guard" {
   EOT
 }
 
-# --- 응답헤더 정책 (CORS + 브라우저 캐싱 미적용) ---
+# --- 응답헤더 정책 (STG stg-news-metaj-cf-response-header-policy 기준) ---
 resource "aws_cloudfront_response_headers_policy" "no_cache_cors" {
   name    = "${local.name_base}-cf-response-header-policy"
-  comment = "CORS and no-cache headers for private paths"
+  comment = ""
 
   cors_config {
     access_control_allow_credentials = false
@@ -76,25 +76,44 @@ resource "aws_cloudfront_response_headers_policy" "no_cache_cors" {
     }
 
     access_control_allow_methods {
-      items = ["GET", "HEAD"]
+      items = ["GET", "OPTIONS"]
     }
 
     access_control_allow_origins {
-      items = ["*"]
+      items = [
+        "dev-news.jtbc.co.kr",
+        "stg-news.jtbc.co.kr",
+        "news.jtbc.co.kr",
+        "dev-news-app.jtbc.co.kr",
+        "stg-news-app.jtbc.co.kr",
+        "news-app.jtbc.co.kr",
+        "dev-meta-j.com",
+        "stg-meta-j.com",
+        "meta-j.com",
+        "dev-meta-j.jtbc.co.kr",
+        "stg-meta-j.jtbc.co.kr",
+        "meta-j.jtbc.co.kr",
+      ]
     }
 
-    origin_override = true
+    access_control_max_age_sec = 600
+    origin_override            = true
   }
 
   custom_headers_config {
     items {
       header   = "Cache-Control"
-      value    = "no-store, no-cache, must-revalidate"
+      value    = "no-cache, no-store, must-revalidate"
       override = true
     }
     items {
       header   = "Pragma"
       value    = "no-cache"
+      override = true
+    }
+    items {
+      header   = "Expires"
+      value    = "0"
       override = true
     }
   }
@@ -114,7 +133,7 @@ resource "aws_cloudfront_distribution" "svc" {
     origin_access_control_id = aws_cloudfront_origin_access_control.svc.id
   }
 
-  # /metaj/private/* — 캐싱 미적용 + 응답헤더 정책
+  # /metaj/private/* — 캐싱 미적용 + 응답헤더 정책 (STG 동일)
   ordered_cache_behavior {
     path_pattern           = "/metaj/private/*"
     target_origin_id       = "${local.name_base}-s3-svc"
@@ -124,7 +143,6 @@ resource "aws_cloudfront_distribution" "svc" {
     compress               = true
 
     cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # CachingDisabled
-    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1" # CORS-S3Origin
     response_headers_policy_id = aws_cloudfront_response_headers_policy.no_cache_cors.id
 
     function_association {
@@ -140,8 +158,9 @@ resource "aws_cloudfront_distribution" "svc" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    cache_policy_id          = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
-    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1" # CORS-S3Origin
+    cache_policy_id            = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
+    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1" # CORS-S3Origin
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.no_cache_cors.id
 
     function_association {
       event_type   = "viewer-request"
