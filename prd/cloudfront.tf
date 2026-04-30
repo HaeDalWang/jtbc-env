@@ -63,6 +63,43 @@ resource "aws_cloudfront_function" "ip_guard" {
   EOT
 }
 
+# --- 응답헤더 정책 (CORS + 브라우저 캐싱 미적용) ---
+resource "aws_cloudfront_response_headers_policy" "no_cache_cors" {
+  name    = "${local.name_base}-cf-response-header-policy"
+  comment = "CORS and no-cache headers for private paths"
+
+  cors_config {
+    access_control_allow_credentials = false
+
+    access_control_allow_headers {
+      items = ["*"]
+    }
+
+    access_control_allow_methods {
+      items = ["GET", "HEAD"]
+    }
+
+    access_control_allow_origins {
+      items = ["*"]
+    }
+
+    origin_override = true
+  }
+
+  custom_headers_config {
+    items {
+      header   = "Cache-Control"
+      value    = "no-store, no-cache, must-revalidate"
+      override = true
+    }
+    items {
+      header   = "Pragma"
+      value    = "no-cache"
+      override = true
+    }
+  }
+}
+
 # --- CloudFront Distribution ---
 resource "aws_cloudfront_distribution" "svc" {
   enabled             = true
@@ -75,6 +112,25 @@ resource "aws_cloudfront_distribution" "svc" {
     domain_name              = aws_s3_bucket.buckets["svc"].bucket_regional_domain_name
     origin_id                = "${local.name_base}-s3-svc"
     origin_access_control_id = aws_cloudfront_origin_access_control.svc.id
+  }
+
+  # /metaj/private/* — 캐싱 미적용 + 응답헤더 정책
+  ordered_cache_behavior {
+    path_pattern           = "/metaj/private/*"
+    target_origin_id       = "${local.name_base}-s3-svc"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # CachingDisabled
+    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1" # CORS-S3Origin
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.no_cache_cors.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.ip_guard.arn
+    }
   }
 
   default_cache_behavior {
