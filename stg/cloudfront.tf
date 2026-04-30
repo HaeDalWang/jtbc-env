@@ -77,6 +77,24 @@ resource "aws_cloudfront_distribution" "svc" {
     origin_access_control_id = aws_cloudfront_origin_access_control.svc.id
   }
 
+  # /metaj/private/* — 캐싱 미적용 + 응답헤더 정책 (콘솔에서 개발자가 설정한 값 유지)
+  ordered_cache_behavior {
+    path_pattern           = "/metaj/private/*"
+    target_origin_id       = "${local.name_base}-s3-svc"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # CachingDisabled
+    response_headers_policy_id = "77b46f9b-7146-4b9e-bd70-5e68542fee40" # stg-news-metaj-cf-response-header-policy
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.ip_guard.arn
+    }
+  }
+
   default_cache_behavior {
     target_origin_id       = "${local.name_base}-s3-svc"
     viewer_protocol_policy = "redirect-to-https"
@@ -84,8 +102,9 @@ resource "aws_cloudfront_distribution" "svc" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    cache_policy_id          = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
-    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1" # CORS-S3Origin
+    cache_policy_id            = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
+    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1" # CORS-S3Origin
+    response_headers_policy_id = "77b46f9b-7146-4b9e-bd70-5e68542fee40" # stg-news-metaj-cf-response-header-policy
 
     function_association {
       event_type   = "viewer-request"

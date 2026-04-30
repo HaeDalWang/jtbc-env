@@ -132,6 +132,7 @@ resource "aws_iam_role_policy" "ec2_app" {
         Resource = [
           "${aws_s3_bucket.buckets["svc"].arn}/*",
           "${aws_s3_bucket.buckets["adm"].arn}/*",
+          "arn:aws:s3:::${local.name_base}-s3-cicd/*",
         ]
       },
       {
@@ -141,6 +142,7 @@ resource "aws_iam_role_policy" "ec2_app" {
         Resource = [
           aws_s3_bucket.buckets["svc"].arn,
           aws_s3_bucket.buckets["adm"].arn,
+          "arn:aws:s3:::${local.name_base}-s3-cicd",
         ]
       },
       {
@@ -197,11 +199,12 @@ resource "aws_instance" "app" {
 
 # --- ALB & 타깃 그룹 ---
 resource "aws_lb_target_group" "app" {
-  name        = local.name_target_group
-  port        = var.target_port
-  protocol    = "HTTP"
-  vpc_id      = module.vpc.vpc_id
-  target_type = "instance"
+  name                 = local.name_target_group
+  port                 = var.target_port
+  protocol             = "HTTP"
+  vpc_id               = module.vpc.vpc_id
+  target_type          = "instance"
+  deregistration_delay = 300
 
   health_check {
     enabled             = true

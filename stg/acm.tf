@@ -26,6 +26,7 @@ resource "aws_acm_certificate" "alb" {
 
   lifecycle {
     create_before_destroy = true
+    ignore_changes        = [tags]
   }
 
   tags = {
