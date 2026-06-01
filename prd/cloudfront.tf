@@ -29,7 +29,9 @@ resource "aws_cloudfront_function" "ip_guard" {
         '1.209.9.204/32',
         '203.249.146.39/32',
         '1.209.9.166/32',
-        '1.209.9.201/32'
+        '1.209.9.201/32',
+        '211.218.153.210',
+        '211.218.153.212'
       ];
 
       function ipToLong(ip) {
@@ -66,7 +68,7 @@ resource "aws_cloudfront_function" "ip_guard" {
 # --- 응답헤더 정책 (STG stg-news-metaj-cf-response-header-policy 기준) ---
 resource "aws_cloudfront_response_headers_policy" "no_cache_cors" {
   name    = "${local.name_base}-cf-response-header-policy"
-  comment = ""
+  comment = "CORS and no-cache headers for private paths"
 
   cors_config {
     access_control_allow_credentials = false
@@ -125,7 +127,7 @@ resource "aws_cloudfront_distribution" "svc" {
   comment             = "${local.name_base}-cf"
   default_root_object = "index.html"
 
-  aliases = ["prd-mj-static.jtbc.co.kr"]
+  aliases = ["mj-static.jtbc.co.kr"]
 
   origin {
     domain_name              = aws_s3_bucket.buckets["svc"].bucket_regional_domain_name
